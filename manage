@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -e ".env.local" ]
+then
+  LOCAL_ENV=`cat .env .env.local | egrep -v '^\#' | xargs`
+else
+  LOCAL_ENV=`cat .env | egrep -v '^\#' | xargs`
+fi
+
+env `echo $LOCAL_ENV` python manage.py "$@"
