@@ -17,3 +17,6 @@ else:
 connect(
     host='mongodb://localhost/kndb'
 )
+
+
+from sourcerer.cli import *

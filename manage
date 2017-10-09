@@ -1,4 +1,5 @@
 #!/bin/bash
+export FLASK_APP=`pwd`/sourcerer/__init__.py
 
 if [ -e ".env.local" ]
 then
@@ -7,4 +8,4 @@ else
   LOCAL_ENV=`cat .env | egrep -v '^\#' | xargs`
 fi
 
-env `echo $LOCAL_ENV` python manage.py "$@"
+env `echo $LOCAL_ENV` flask "$@"
