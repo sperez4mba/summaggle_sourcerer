@@ -20,3 +20,4 @@ connect(
 
 
 from sourcerer.cli import *
+import sourcerer.views
