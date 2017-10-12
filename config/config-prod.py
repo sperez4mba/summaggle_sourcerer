@@ -1,4 +1,5 @@
 import os
+import urllib
 
 
 DEBUG = False
@@ -38,7 +39,7 @@ LOG_FILE_SIZE = int(env('LOG_FILE_SIZE', '10'))
 _MONGODB_AUTH_SOURCE = env('_MONGODB_AUTH_SOURCE', 'admin')
 _MONGODB_HOST = env('_MONGODB_HOST', '127.0.0.1')
 _MONGODB_USER = env('_MONGODB_USER', 'mongouser')
-_MONGODB_PASSWORD = env('_MONGODB_PASSWORD', 'password')
+_MONGODB_PASSWORD = urllib.quote(env('_MONGODB_PASSWORD', 'password'))
 _MONGODB_NAME = env('_MONGODB_NAME', 'mongodb')
 _MONGODB_CONN_CHAIN = "mongodb://{}:{}@{}/{}?authSource={}".format(
     _MONGODB_USER,
