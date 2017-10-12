@@ -39,6 +39,7 @@ _MONGODB_AUTH_SOURCE = env('_MONGODB_AUTH_SOURCE', 'admin')
 _MONGODB_HOST = env('_MONGODB_HOST', '127.0.0.1')
 _MONGODB_USER = env('_MONGODB_USER', 'mongouser')
 _MONGODB_PASSWORD = env('_MONGODB_PASSWORD', 'password')
+_MONGODB_NAME = env('_MONGODB_NAME', 'mongodb')
 _MONGODB_CONN_CHAIN = "mongodb://%s:%s@%s/%s?authSource=%s".format(
     _MONGODB_USER,
     _MONGODB_PASSWORD,
