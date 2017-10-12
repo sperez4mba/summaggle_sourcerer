@@ -16,3 +16,9 @@ def get_cse_results_cmd():
 def scrape_page_cmd(url):
     """Scrape page given a URL"""
     scrape_page(url)
+
+
+@app.cli.command()
+def prun():
+    """Run flask server"""
+    app.run(host='0.0.0.0')

@@ -2,6 +2,7 @@ import os
 import sys
 from flask import Flask
 from mongoengine import connect
+import logging
 
 
 app = Flask(__name__)
@@ -17,6 +18,16 @@ else:
 connect(
     host='mongodb://localhost/kndb'
 )
+
+
+formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s %(pathname)s %(funcName)s %(message)s")
+log_handler = logging.FileHandler(
+        '/var/log/summaggle.log'
+)
+log_handler.setFormatter(formatter)
+logger = logging.getLogger('summaggle')
+logger.setLevel(logging.DEBUG)
+logger.addHandler(log_handler)
 
 
 from sourcerer.cli import *
