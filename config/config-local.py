@@ -2,6 +2,7 @@ import os
 
 
 DEBUG = True
+LOG_FILE_PATH = './summaggle.log'
 
 
 class ConfigError(Exception):
@@ -31,3 +32,7 @@ def env(name, default=None):
 
 CSE_API_KEY = env('CSE_API_KEY', '123')
 CSE_CONTEXT = env('CSE_CX', '123')
+
+LOG_FILE_SIZE = int(env('LOG_FILE_SIZE', '10'))
+
+_MONGODB_CONN_CHAIN = 'mongodb://localhost/kndb'

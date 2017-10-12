@@ -2,6 +2,7 @@ import os
 
 
 DEBUG = False
+LOG_FILE_PATH = '/var/log/summaggle.log'
 
 
 class ConfigError(Exception):
@@ -31,3 +32,17 @@ def env(name, default=None):
 
 CSE_API_KEY = env('CSE_API_KEY', '123')
 CSE_CONTEXT = env('CSE_CX', '123')
+
+LOG_FILE_SIZE = int(env('LOG_FILE_SIZE', '10'))
+
+_MONGODB_AUTH_SOURCE = env('_MONGODB_AUTH_SOURCE', 'admin')
+_MONGODB_HOST = env('_MONGODB_HOST', '127.0.0.1')
+_MONGODB_USER = env('_MONGODB_USER', 'mongouser')
+_MONGODB_PASSWORD = env('_MONGODB_PASSWORD', 'password')
+_MONGODB_CONN_CHAIN = "mongodb://%s:%s@%s/%s?authSource=%s".format(
+    _MONGODB_USER,
+    _MONGODB_PASSWORD,
+    _MONGODB_HOST,
+    _MONGODB_NAME,
+    _MONGODB_AUTH_SOURCE
+)
