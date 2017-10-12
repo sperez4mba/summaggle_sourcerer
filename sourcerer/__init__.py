@@ -25,6 +25,9 @@ log_handler = logging.FileHandler(
         '/var/log/summaggle.log'
 )
 log_handler.setFormatter(formatter)
+werkzeug_logger = logging.getLogger('werkzeug')
+werkzeug_logger.setLevel(logging.INFO)
+werkzeug_logger.addHandler(log_handler)
 logger = logging.getLogger('summaggle')
 logger.setLevel(logging.DEBUG)
 logger.addHandler(log_handler)
