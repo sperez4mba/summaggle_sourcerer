@@ -15,6 +15,7 @@ def come_back():
 def search():
     try:
         form = SearchForm()
+        logger.info(">>>>>>>> {}".format(form.validate_on_submit()))
         if form.validate_on_submit():
             cse_search_task.apply_async((form.search.data, ))
             flash('Search results requested for terms="%s"' %
