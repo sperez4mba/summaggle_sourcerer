@@ -5,14 +5,18 @@ from mongoengine import connect
 import logging
 from logging.handlers import RotatingFileHandler
 
+from celery import Celery
+
 
 app = Flask(__name__)
 
 if os.environ.get('SOURCERER_SETTINGS'):
     app.config.from_envvar("SOURCERER_SETTINGS")
 else:
-    app.logger.warn("SOURCERER_SETTINGS environment not declared "
-                    "defaulting to the test environment...")
+    print("SOURCERER_SETTINGS environment not declared "
+          "defaulting to the test environment...",
+          file=sys.stderr
+          )
     app.config.from_pyfile(os.path.abspath('./config/config-local.py'))
 
 
@@ -39,5 +43,17 @@ logger.setLevel(logging.DEBUG)
 logger.addHandler(log_handler)
 
 
+# Initialize Celery
+celery_app = Celery(
+    app.name,
+    broker=app.config['CELERY_BROKER_URL'],
+    backend=app.config['CELERY_RESULT_BACKEND']
+)
+celery_app.conf.update(app.config)
+celery_app.autodiscover_tasks([
+    'sourcerer.tasks',
+])
+
+
 from sourcerer.cli import *
-import sourcerer.views
+import sourcerer.views.views

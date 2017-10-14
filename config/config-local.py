@@ -3,6 +3,8 @@ import os
 
 DEBUG = True
 LOG_FILE_PATH = './summaggle.log'
+WTF_CSRF_ENABLED = True
+SECRET_KEY = 'los-moruecos-envueltos-en-termogeno-no-engendran-corderillos'
 
 
 class ConfigError(Exception):
@@ -36,3 +38,14 @@ CSE_CONTEXT = env('CSE_CX', '123')
 LOG_FILE_SIZE = int(env('LOG_FILE_SIZE', '10'))
 
 _MONGODB_CONN_CHAIN = 'mongodb://localhost/kndb'
+
+
+# REDIS
+REDIS_HOST = env("REDIS_HOST")
+REDIS_PORT = env("REDIS_PORT")
+
+
+CELERY_BROKER_URL = "redis://{}:{}/0".format(REDIS_HOST, REDIS_PORT)
+CELERY_RESULT_BACKEND = "redis://{}:{}/0".format(REDIS_HOST, REDIS_PORT)
+CELERY_DEFAULT_QUEUE='celery.summaggle'
+CELERY_DEFAULT_EXCHANGE='celery.summaggle'

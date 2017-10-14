@@ -1,4 +1,6 @@
 import click
+from subprocess import call
+import sys
 
 from sourcerer import app
 from sourcerer.services.google_cse import get_cse_results
@@ -6,10 +8,12 @@ from sourcerer.scrapers.stackoverflow import scrape_page
 from sourcerer.models.mongo import QuestionAnswers
 
 
+@click.option('--search', default='', help='Search terms to be looked up through Google CSE')
 @app.cli.command()
-def get_cse_results_cmd():
+def get_cse_results_cmd(search):
     """Get CSE results"""
-    get_cse_results()
+    #SUMMAGGLE_SETTINGS=/Users/sergioperezaranda/Mycodestore/knowledge_summarization_tool/summaggle/summaggle_sourcerer/config/config-local.py ./manage get_cse_results_cmd --search "nodejs video streaming server"
+    import pprint;pprint.pprint(get_cse_results(search))
 
 
 @click.option('--url', default='', help='URL to be scraped')
@@ -33,3 +37,9 @@ def create_test_answer_object_cmd():
         source='test'
     )
     qa.save()
+
+
+@app.cli.command()
+def celery_worker_up():
+    """Run celery worker"""
+    call(["celery", "worker", "-A", "sourcerer.celery_app", "--loglevel=debug"])

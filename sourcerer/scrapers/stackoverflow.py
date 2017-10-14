@@ -9,4 +9,3 @@ def scrape_page(url):
     #tree.find_all('td',{'class':'answercell'})[1]
 
     answers_html = tree.find_all('div', {'class': 'post-text'})
-    import bpdb;bpdb.set_trace()

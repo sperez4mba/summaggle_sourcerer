@@ -3,6 +3,8 @@ import os
 
 DEBUG = False
 LOG_FILE_PATH = '/var/log/summaggle.log'
+WTF_CSRF_ENABLED = True
+SECRET_KEY = 'los-moruecos-envueltos-en-termogeno-no-engendran-corderillos'
 
 
 class ConfigError(Exception):
@@ -46,3 +48,14 @@ _MONGODB_CONN_CHAIN = "mongodb://{}:{}@{}/{}".format(
     _MONGODB_HOST,
     _MONGODB_NAME
 )
+
+
+# REDIS
+REDIS_HOST = env("REDIS_HOST")
+REDIS_PORT = env("REDIS_PORT")
+
+
+CELERY_BROKER_URL = "redis://{}:{}/0".format(REDIS_HOST, REDIS_PORT)
+CELERY_RESULT_BACKEND = "redis://{}:{}/0".format(REDIS_HOST, REDIS_PORT)
+CELERY_DEFAULT_QUEUE='celery.summaggle'
+CELERY_DEFAULT_EXCHANGE='celery.summaggle'
