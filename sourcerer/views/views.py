@@ -13,12 +13,16 @@ def come_back():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    form = SearchForm()
-    if form.validate_on_submit():
-        cse_search_task.apply_async((form.search.data, ))
-        flash('Search results requested for terms="%s"' %
-              (form.search.data))
-        return redirect('/come_back')
-    return render_template('search.html', 
-                           title='Sign In',
-                           form=form)
+    try:
+        form = SearchForm()
+        if form.validate_on_submit():
+            cse_search_task.apply_async((form.search.data, ))
+            flash('Search results requested for terms="%s"' %
+                  (form.search.data))
+            return redirect('/come_back')
+        return render_template('search.html',
+                               title='Sign In',
+                               form=form)
+    except Exception as e:
+        logger.exception('traceback')
+        return 'Internal Server Error', 500
