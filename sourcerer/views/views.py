@@ -18,8 +18,6 @@ def search():
         logger.info(">>>>>>>> {}".format(form.validate_on_submit()))
         if form.validate_on_submit():
             cse_search_task.apply_async((form.search.data, ))
-            flash('Search results requested for terms="%s"' %
-                  (form.search.data))
             return redirect('/come_back')
         return render_template('search.html',
                                title='Sign In',

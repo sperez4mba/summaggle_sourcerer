@@ -26,7 +26,7 @@ def scrape_page_cmd(url):
 @app.cli.command()
 def prun():
     """Run flask server"""
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', threaded=True)
 
 
 @app.cli.command()

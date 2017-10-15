@@ -27,5 +27,10 @@ def cse_search_task(search_terms):
                      "error {}".format(e))
         logger.exception('traceback')
 
+
 def is_worth_storing_search_results():
     return True
+
+
+def check_if_search_is_similar_to_existing_one():
+    pass
