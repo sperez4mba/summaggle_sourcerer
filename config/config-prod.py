@@ -1,10 +1,9 @@
+# -*- coding: utf-8 -*-
 import os
 
-
 DEBUG = False
-LOG_FILE_PATH = '/var/log/summaggle.log'
+LOG_FILE_PATH = './summaggle.log'
 WTF_CSRF_ENABLED = True
-SECRET_KEY = 'los-moruecos-envueltos-en-termogeno-no-engendran-corderillos'
 
 
 class ConfigError(Exception):
@@ -32,21 +31,22 @@ def env(name, default=None):
         raise ConfigError("{} not found in environment".format(name))
 
 
+SECRET_KEY = env('SECRET_KEY', '123')
 CSE_API_KEY = env('CSE_API_KEY', '123')
 CSE_CONTEXT = env('CSE_CX', '123')
 
 LOG_FILE_SIZE = int(env('LOG_FILE_SIZE', '10'))
 
 #_MONGODB_AUTH_SOURCE = env('_MONGODB_AUTH_SOURCE', 'admin')
-_MONGODB_HOST = env('_MONGODB_HOST', '127.0.0.1')
-_MONGODB_USER = env('_MONGODB_USER', 'mongouser')
-_MONGODB_PASSWORD = env('_MONGODB_PASSWORD', 'password')
-_MONGODB_NAME = env('_MONGODB_NAME', 'mongodb')
-_MONGODB_CONN_CHAIN = "mongodb://{}:{}@{}/{}".format(
-    _MONGODB_USER,
-    _MONGODB_PASSWORD,
-    _MONGODB_HOST,
-    _MONGODB_NAME
+MONGODB_HOST = env('MONGODB_HOST', '127.0.0.1')
+MONGODB_USER = env('MONGODB_USER', 'mongouser')
+MONGODB_PASSWORD = env('MONGODB_PASSWORD', 'password')
+MONGODB_NAME = env('MONGODB_NAME', 'mongodb')
+MONGODB_CONN_CHAIN = "mongodb://{}:{}@{}/{}".format(
+    MONGODB_USER,
+    MONGODB_PASSWORD,
+    MONGODB_HOST,
+    MONGODB_NAME
 )
 
 

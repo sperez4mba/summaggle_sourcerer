@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 import os
-import sys
 from flask import Flask
 from mongoengine import connect
 import logging
@@ -13,15 +13,12 @@ app = Flask(__name__)
 if os.environ.get('SOURCERER_SETTINGS'):
     app.config.from_envvar("SOURCERER_SETTINGS")
 else:
-    print("SOURCERER_SETTINGS environment not declared "
-          "defaulting to the test environment...",
-          file=sys.stderr
-          )
+    print("SOURCERER_SETTINGS environment not declared defaulting to the test environment...")
     app.config.from_pyfile(os.path.abspath('./config/config-local.py'))
 
 
 connect(
-    host=app.config['_MONGODB_CONN_CHAIN']
+    host=app.config['MONGODB_CONN_CHAIN']
 )
 
 

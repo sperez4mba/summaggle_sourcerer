@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import render_template, flash, redirect
 
 from sourcerer import app

@@ -1,10 +1,9 @@
+# -*- coding: utf-8 -*-
 import os
-
 
 DEBUG = True
 LOG_FILE_PATH = './summaggle.log'
 WTF_CSRF_ENABLED = True
-SECRET_KEY = 'los-moruecos-envueltos-en-termogeno-no-engendran-corderillos'
 
 
 class ConfigError(Exception):
@@ -37,7 +36,7 @@ CSE_CONTEXT = env('CSE_CX', '123')
 
 LOG_FILE_SIZE = int(env('LOG_FILE_SIZE', '10'))
 
-_MONGODB_CONN_CHAIN = 'mongodb://localhost/testkndb'
+MONGODB_CONN_CHAIN = 'mongodb://localhost/testkndb'
 
 
 # REDIS
