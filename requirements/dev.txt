@@ -1,2 +1,5 @@
+babel==2.5.1
 bpython==0.16
+flower==0.9.2
 nose2==0.6.5
+tornado==4.5.2
