@@ -2,7 +2,7 @@
 import os
 
 DEBUG = False
-LOG_FILE_PATH = './summaggle.log'
+LOG_FILE_PATH = '/var/log/summaggle.log'
 WTF_CSRF_ENABLED = True
 
 
