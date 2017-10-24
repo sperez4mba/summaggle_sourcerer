@@ -44,3 +44,14 @@ def create_test_answer_object_cmd():
 def celery_worker_up():
     """Run celery worker"""
     call(["celery", "worker", "-A", "sourcerer.celery_app", "--loglevel=debug"])
+
+
+@app.cli.command()
+def celery_beat_up():
+    """Run celery beat"""
+    INTERVAL_STRING = "--max-interval={}".format(
+        str(
+            app.config['CELERY_BEAT_MAX_INTERVAL_IN_SECS']
+        )
+    )
+    call(["celery", "beat", "-A", "sourcerer.celery_app", "--loglevel=debug", INTERVAL_STRING])

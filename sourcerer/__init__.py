@@ -4,6 +4,7 @@ from flask import Flask
 from mongoengine import connect
 import logging
 from logging.handlers import RotatingFileHandler
+from datetime import timedelta
 
 from celery import Celery
 
@@ -50,6 +51,16 @@ celery_app.conf.update(app.config)
 celery_app.autodiscover_tasks([
     'sourcerer.tasks',
 ])
+celery_app.conf.CELERYBEAT_SCHEDULE = {
+    'checks-and-scrapes-every-so-often': {
+        'task': 'sourcerer.tasks.check_for_searches_with_unscraped_links_and_scrape_them',
+        'schedule': timedelta(
+            minutes=app.config[
+                'UNSCRAPED_LINKS_CHECK_INTERVAL_IN_SECS'
+            ]
+        )
+    },
+}
 
 
 from sourcerer.cli import *

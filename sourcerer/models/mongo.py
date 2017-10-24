@@ -6,6 +6,7 @@ class InitialSearch(Document):
     source = StringField(max_length=50, required=True)
     result_links = ListField(StringField(max_length=500))
     search_terms = ListField(StringField(max_length=50))
+    links_last_scraped_at = DateTimeField()
 
 
 class Answer(EmbeddedDocument):

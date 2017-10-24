@@ -18,7 +18,7 @@ class TestTasks(TestCase):
         all_collection_names = db.collection_names()
         [db.drop_collection(cn) for cn in all_collection_names]
 
-    def test_(self):
+    def test_cse_search_task(self):
         cse_mock_json = None
         with open(GOOGLE_CSE_MOCK_RESPONSE_FILEPATH, 'r') as fd:
             cse_mock_json = fd.read()
@@ -35,3 +35,6 @@ class TestTasks(TestCase):
 
         all_initial_searches = InitialSearch.objects.all()
         self.assertEqual(1, len(all_initial_searches))
+
+    def test_checking_for_searches_with_unscraped_links(self):
+        pass

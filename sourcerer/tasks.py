@@ -35,3 +35,8 @@ def is_worth_storing_search_results():
 
 def check_if_search_is_similar_to_existing_one():
     pass
+
+
+@celery_app.task
+def check_for_searches_with_unscraped_links_and_scrape_them():
+    logger.info('scraped')
