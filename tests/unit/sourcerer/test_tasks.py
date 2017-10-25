@@ -37,4 +37,11 @@ class TestTasks(TestCase):
         self.assertEqual(1, len(all_initial_searches))
 
     def test_checking_for_searches_with_unscraped_links(self):
-        pass
+        is_ = InitialSearch(
+            source='google',
+            result_links=['http://something.com', 'http://something_else.com'],
+            search_terms=['something', 'else']
+        )
+        is_.save()
+
+        #

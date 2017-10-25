@@ -5,7 +5,7 @@ import sys
 
 from sourcerer import app
 from sourcerer.services.google_cse import get_cse_results
-from sourcerer.scrapers.stackoverflow import scrape_page
+from sourcerer.scrapers.stackoverflow import scrape_so_page
 from sourcerer.models.mongo import QuestionAnswers
 
 
@@ -17,11 +17,11 @@ def get_cse_results_cmd(search):
     import pprint;pprint.pprint(get_cse_results(search))
 
 
-@click.option('--url', default='', help='URL to be scraped')
+@click.option('--url', default='', help='URL of SO to be scraped')
 @app.cli.command()
-def scrape_page_cmd(url):
-    """Scrape page given a URL"""
-    scrape_page(url)
+def scrape_so_page_cmd(url):
+    """Scrape question/answers SO page given a URL"""
+    scrape_so_page(url)
 
 
 @app.cli.command()

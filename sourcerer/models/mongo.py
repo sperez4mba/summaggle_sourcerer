@@ -19,3 +19,10 @@ class QuestionAnswers(Document):
     source = StringField(max_length=50, required=True)
     tags = ListField(StringField(max_length=50))
     answers = EmbeddedDocumentListField(Answer)
+
+
+class InitialSearchToLinkStringToQuestionAnswers(Document):
+    initial_search = ReferenceField(InitialSearch)
+    link_list_index = IntField()
+    link_string = StringField(max_length=500)
+    question_answers = ReferenceField(QuestionAnswers)
