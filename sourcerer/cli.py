@@ -5,8 +5,8 @@ import sys
 
 from sourcerer import app
 from sourcerer.services.google_cse import get_cse_results
-from sourcerer.scrapers.stackoverflow import scrape_so_page
-from sourcerer.models.mongo import QuestionAnswers
+from sourcerer.scrapers.stackoverflow import scrape_page
+from sourcerer.models import QuestionAnswers
 
 
 @click.option('--search', default='', help='Search terms to be looked up through Google CSE')
@@ -21,7 +21,7 @@ def get_cse_results_cmd(search):
 @app.cli.command()
 def scrape_so_page_cmd(url):
     """Scrape question/answers SO page given a URL"""
-    scrape_so_page(url)
+    scrape_page(url)
 
 
 @app.cli.command()

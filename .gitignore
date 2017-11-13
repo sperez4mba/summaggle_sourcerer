@@ -4,6 +4,8 @@
 __pycache__/
 *.log
 dump/
-env/
+virtualenv/
 celerybeat.pid
 celerybeat-schedule
+logfile
+.vagrant/

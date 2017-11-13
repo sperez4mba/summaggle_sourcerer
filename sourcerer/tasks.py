@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import sys
-
-from sourcerer import celery_app, logger
-from sourcerer.services.google_cse import get_cse_results
-from sourcerer.models.mongo import InitialSearch
 import requests
 from urllib.parse import urlparse
+import datetime as dt
+
+from sourcerer import app, celery_app, logger
+from sourcerer.services.google_cse import get_cse_results
+from sourcerer.models import *
+from sourcerer.scrapers.stackoverflow import scrape_page
 
 
 @celery_app.task
@@ -13,14 +15,14 @@ def cse_search_task(search_terms):
     try:
         logger.info("task called {}".format(search_terms))
         results = get_cse_results(search_terms)
-        links = []
+        urls = []
         for i in results['items']:
-            links.append(i['link'])
+            urls.append(i['link'])
         search_term_list = search_terms.split(" ")
         if is_worth_storing_search_results():
             is_ = InitialSearch(
                 source='google',
-                result_links=links,
+                result_urls=urls,
                 search_terms=search_term_list
             )
             is_.save()
@@ -28,7 +30,6 @@ def cse_search_task(search_terms):
     except Exception as e:
         logger.error("cse_search_task: Caught "
                      "error {}".format(e))
-        logger.exception('traceback')
 
 
 def is_worth_storing_search_results():
@@ -40,30 +41,71 @@ def check_if_search_is_similar_to_existing_one():
 
 
 @celery_app.task
-def check_for_searches_with_unscraped_links_and_scrape_them_task():
+def scrape_unscraped_urls_and_store_answers_task():
     try:
-        unscraped_searches = get_unscraped_initial_searches()
-        for us in unscraped_searches:
-            urls = us.result_links
-            for u in urls:
-                if is_from_stackoverflow(url):
-                    answers = scrape_so_page(u)
-        logger.info('scraped')
+        all_initial_searches = InitialSearch.objects.all()
+        for initial_search in all_initial_searches:
+            urls = initial_search.result_urls
+            for url_index, url in enumerate(urls):
+                if has_url_been_scraped_lately(initial_search.id, url_index, url):
+                    logger.info("scrape_unscraped_urls_and_store_answers_task: "
+                                "Url {} was scraped not long ago, "
+                                "skip it".format(
+                                    url
+                                ))
+                    continue
+
+                if has_stackoverflow_domain(url):
+                    answers = scrape_page(url)
+
+                    answer_objects = []
+                    # It's a Stackoverflow convention that the first element
+                    # of answers is the question so skip it
+                    for a in answers[1:]:
+                        answer_objects.append(
+                            Answer(
+                                answer_markup=a
+                            )
+                        )
+                    question_answers = QuestionAnswers(
+                        question_markup=answers[0],
+                        source=app.config['STACKOVERFLOW_STRING'],
+                        answers=answer_objects
+                    )
+                    question_answers.save()
+
+                    scrape_time = get_now()
+                    search_to_url_to_question_answer = InitialSearchToUrlToQuestionAnswers(
+                        initial_search=initial_search,
+                        url_list_index=url_index,
+                        url_string=url,
+                        question_answers=question_answers,
+                        url_last_scraped_at=scrape_time
+                    )
+                    search_to_url_to_question_answer.save()
+                else:
+                    logger.info("scrape_unscraped_urls_and_store_answers_task: "
+                                "Url {} has none of the scrapable "
+                                "domains".format(
+                                    url
+                                ))
     except Exception as e:
-        logger.error("check_for_searches_with_unscraped_links_and_scrape_them_task: "
+        logger.error("scrape_unscraped_urls_and_store_answers_task: "
                      "Caught error {}".format(e))
-        logger.exception('traceback')
 
 
-def is_from_stackoverflow(url):
-    parsed_uri = urlparse(u)
+def get_now():
+    return dt.datetime.now()
+
+
+def has_url_been_scraped_lately(initial_search_id, url_index, url):
+    return False
+
+
+def has_stackoverflow_domain(url):
+    parsed_uri = urlparse(url)
     domain = "{}://{}/".format(
-        uri.scheme,
-        uri.netloc
+        parsed_uri.scheme,
+        parsed_uri.netloc
     )
-    return domain.lower() == app.config['STACKOVERFLOW_DOMAIN_NAME']:
-
-
-def get_unscraped_initial_searches():
-    all_initial_searches = InitialSearch.objects.all()
-    return [ais for ais in all_initial_searches if ais.links_last_scraped_at is None]
+    return domain.lower() == app.config['STACKOVERFLOW_DOMAIN_NAME']

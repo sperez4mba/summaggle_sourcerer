@@ -8,16 +8,16 @@ endif
 
 
 start-web:
-	export SOURCERER_SETTINGS=`pwd`/config/config-prod.py && source env/bin/activate && `pwd`/manage prun
+	export SOURCERER_SETTINGS=`pwd`/config/config-prod.py && source virtualenv/bin/activate && `pwd`/manage prun
 
 
 start-tasks:
-	export SOURCERER_SETTINGS=`pwd`/config/config-prod.py && source env/bin/activate && `pwd`/manage celery_worker_up
+	export SOURCERER_SETTINGS=`pwd`/config/config-prod.py && source virtualenv/bin/activate && `pwd`/manage celery_worker_up
 
 
 shell:
-	export SOURCERER_SETTINGS=`pwd`/config/config-prod.py && source env/bin/activate && `pwd`/manage shell
+	export SOURCERER_SETTINGS=`pwd`/config/config-prod.py && source virtualenv/bin/activate && `pwd`/manage shell
 
 
 test:
-	export SOURCERER_SETTINGS=`pwd`/config/config-test.py && source env/bin/activate && nose2 -s . tests -v
+	export SOURCERER_SETTINGS=`pwd`/config/config-test.py && source virtualenv/bin/activate && nose2 -s . tests -v
