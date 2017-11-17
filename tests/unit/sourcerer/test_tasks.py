@@ -5,10 +5,9 @@ import json
 import datetime as dt
 
 from sourcerer import app
-from sourcerer.tasks import cse_search_task, \
+from sourcerer.tasks import search_task, \
     scrape_unscraped_urls_and_store_answers_task
-from sourcerer.models import InitialSearch, QuestionAnswers, \
-    InitialSearchToUrlToQuestionAnswers
+from sourcerer.models import InitialSearch, Url, QuestionAnswers
 
 GOOGLE_CSE_MOCK_RESPONSE_FILEPATH = os.path.abspath(
     './tests/support/google_cse_mock_response.json'
@@ -29,23 +28,42 @@ class TestTasks(TestCase):
 
         search_terms = 'nodejs video streaming server'
 
+        expected_urls = [
+            'https://medium.com/@daspinola/video-stream-with-node-js-and-html5-320b3191a6b6',
+            'https://stackoverflow.com/questions/24976123/streaming-a-video-file-to-an-html5-video-player-with-node-js-so-that-the-video-c',
+            'https://stackoverflow.com/questions/42803724/live-video-stream-on-a-node-js-server',
+            'https://www.quora.com/How-can-I-implement-a-video-streaming-server-using-Node-JS',
+            'https://www.quora.com/How-do-you-build-a-video-streaming-service-on-Node-js-servers-like-at-Netflix',
+            'https://www.quora.com/How-do-I-learn-to-stream-live-video-with-Node-js',
+            'https://stackoverflow.com/questions/21921790/best-approach-to-real-time-http-streaming-to-html5-video-client',
+            'https://stackoverflow.com/questions/4360060/video-streaming-with-html-5-via-node-js',
+            'https://stackoverflow.com/questions/31792198/high-performance-video-file-server-in-nodejs',
+            'https://stackoverflow.com/questions/45797818/how-to-create-node-server-that-receiving-video-stream-and-save-the-stream-as-vid'
+        ]
+
         with mock.patch(
-            'sourcerer.tasks.get_cse_results'
+            'sourcerer.tasks.get_search_engine_results'
         ) as get_cse_results_mock:
             get_cse_results_mock.return_value = cse_mock_resp_dict
 
-            cse_search_task(search_terms)
+            search_task(search_terms)
 
         all_initial_searches = InitialSearch.objects.all()
         self.assertEqual(1, len(all_initial_searches))
+        urls = all_initial_searches[0].result_urls
+        self.assertEqual(len(expected_urls), len(urls))
+        for url in urls:
+            self.assertTrue(url.url in expected_urls)
 
     def test_unscraped_url_has_no_stackoverflow_domain(self):
-        is_ = InitialSearch(
+        result_url_1 = 'http://something.com'
+        url_1 = Url(url=result_url_1).save()
+        initial_search = InitialSearch(
             source='google',
-            result_urls=['http://something.com'],
+            result_urls=[url_1],
             search_terms=['something', 'else']
         )
-        is_.save()
+        initial_search.save()
 
         with mock.patch(
                 'sourcerer.tasks.scrape_page'
@@ -57,9 +75,11 @@ class TestTasks(TestCase):
     def test_unscraped_url_has_stackoverflow_domain(self):
         result_url_1 = 'https://stackoverflow.com/questions/123/the-question'
         result_url_2 = 'https://stackoverflow.com/questions/321/another-question'
+        url_1 = Url(url=result_url_1).save()
+        url_2 = Url(url=result_url_2).save()
         initial_search = InitialSearch(
             source='google',
-            result_urls=[result_url_1, result_url_2],
+            result_urls=[url_1, url_2],
             search_terms=['a', 'question', 'about', 'something']
         )
         initial_search.save()
@@ -107,30 +127,8 @@ class TestTasks(TestCase):
         )
         for a in question_answers[0].answers:
             self.assertTrue(
-                a.answer_markup in expected_answers_list_1
+                a.markup in expected_answers_list_1
             )
-        search_to_url_to_question_answers = InitialSearchToUrlToQuestionAnswers.objects.all()
-        self.assertEqual(2, len(search_to_url_to_question_answers))
-        self.assertEqual(
-            initial_search,
-            search_to_url_to_question_answers[0].initial_search
-        )
-        self.assertEqual(
-            question_answers[0],
-            search_to_url_to_question_answers[0].question_answers
-        )
-        self.assertEqual(
-            0,
-            search_to_url_to_question_answers[0].url_list_index
-        )
-        self.assertEqual(
-            result_url_1,
-            search_to_url_to_question_answers[0].url_string
-        )
-        self.assertEqual(
-            expected_scrape_time.strftime("%H:%M:%S"),
-            search_to_url_to_question_answers[0].url_last_scraped_at.strftime("%H:%M:%S")
-        )
         # Assertions related to result_url_2
         self.assertEqual(
             expected_answers_list_2[0],
@@ -146,26 +144,5 @@ class TestTasks(TestCase):
         )
         for a in question_answers[1].answers:
             self.assertTrue(
-                a.answer_markup in expected_answers_list_2
+                a.markup in expected_answers_list_2
             )
-        search_to_url_to_question_answers = InitialSearchToUrlToQuestionAnswers.objects.all()
-        self.assertEqual(
-            initial_search,
-            search_to_url_to_question_answers[1].initial_search
-        )
-        self.assertEqual(
-            question_answers[1],
-            search_to_url_to_question_answers[1].question_answers
-        )
-        self.assertEqual(
-            1,
-            search_to_url_to_question_answers[1].url_list_index
-        )
-        self.assertEqual(
-            result_url_2,
-            search_to_url_to_question_answers[1].url_string
-        )
-        self.assertEqual(
-            expected_scrape_time.strftime("%H:%M:%S"),
-            search_to_url_to_question_answers[1].url_last_scraped_at.strftime("%H:%M:%S")
-        )

@@ -7,4 +7,4 @@ def scrape_page(url):
     answers_page = requests.get(url)
     tree = BeautifulSoup(answers_page.content, 'html.parser')
     answers_html = tree.find_all('div', {'class': 'post-text'})
-    return list(answers_html)
+    return [str(ah) for ah in answers_html]

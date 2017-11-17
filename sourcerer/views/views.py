@@ -4,7 +4,7 @@ from flask import render_template, flash, redirect
 from sourcerer import app
 from sourcerer.views.forms import SearchForm
 from sourcerer import logger
-from sourcerer.tasks import cse_search_task
+from sourcerer.tasks import search_task
 
 
 @app.route('/come_back')
@@ -18,7 +18,7 @@ def search():
         form = SearchForm()
         logger.info(">>>>>>>> {}".format(form.validate_on_submit()))
         if form.validate_on_submit():
-            cse_search_task.apply_async((form.search.data, ))
+            search_task.apply_async((form.search.data, ))
             return redirect('/come_back')
         return render_template('search.html',
                                title='Sign In',

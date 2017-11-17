@@ -53,10 +53,10 @@ celery_app.autodiscover_tasks([
 ])
 celery_app.conf.CELERYBEAT_SCHEDULE = {
     'checks-and-scrapes-every-so-often': {
-        'task': 'sourcerer.tasks.check_for_searches_with_unscraped_links_and_scrape_them',
+        'task': 'sourcerer.tasks.scrape_unscraped_urls_and_store_answers_task',
         'schedule': timedelta(
             minutes=app.config[
-                'UNSCRAPED_LINKS_CHECK_INTERVAL_IN_SECS'
+                'UNSCRAPED_LINKS_CHECK_INTERVAL_IN_MINUTES'
             ]
         )
     },
