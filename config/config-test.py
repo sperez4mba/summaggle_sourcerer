@@ -36,7 +36,9 @@ CSE_CONTEXT = env('CSE_CX', '123')
 
 LOG_FILE_SIZE = int(env('LOG_FILE_SIZE', '10'))
 
-MONGODB_CONN_CHAIN = 'mongodb://localhost/testkndb'
+MONGODB_SETTINGS = {
+        'host': 'mongodb://localhost/testkndb'
+}
 
 
 # REDIS

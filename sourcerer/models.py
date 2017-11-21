@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
-from mongoengine import *
+#from mongoengine import *
+from sourcerer import db
 
 
-class Url(Document):
-    url = StringField(max_length=500)
-    url_last_scraped_at = DateTimeField(default=None)
+class Url(db.Document):
+    url = db.StringField(max_length=500, required=True)
+    url_last_scraped_at = db.DateTimeField(default=None)
+    source = db.StringField(max_length=50)
 
 
-class InitialSearch(Document):
-    source = StringField(max_length=50, required=True)
-    result_urls = ListField(ReferenceField(Url))
-    search_terms = ListField(StringField(max_length=50))
+class InitialSearch(db.Document):
+    result_urls = db.ListField(db.ReferenceField(Url))
+    search_terms = db.ListField(db.StringField(max_length=50))
+    source = db.StringField(max_length=50)
 
 
-class Answer(EmbeddedDocument):
-    markup = StringField(max_length=10000, required=True)
+class Answer(db.Document):
+    markup = db.StringField(max_length=10000, required=True)
 
 
-class QuestionAnswers(Document):
-    question_markup = StringField(max_length=10000, required=True)
-    source = StringField(max_length=50, required=True)
-    tags = ListField(StringField(max_length=50))
-    answers = EmbeddedDocumentListField(Answer)
+class QuestionAnswers(db.Document):
+    question_markup = db.StringField(max_length=10000, required=True)
+    source_url = db.ReferenceField(Url)
+    tags = db.ListField(db.StringField(max_length=50))
+    answers = db.ListField(db.ReferenceField(Answer))

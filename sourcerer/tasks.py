@@ -69,17 +69,18 @@ def scrape_unscraped_urls_and_store_answers_task():
                     answer_objects.append(
                         Answer(
                             markup=a
-                        )
+                        ).save()
                     )
+                url.url_last_scraped_at = get_now()
+                url.source = app.config['STACKOVERFLOW_STRING']
+                url.save()
+
                 question_answers = QuestionAnswers(
                     question_markup=answers[0],
-                    source=app.config['STACKOVERFLOW_STRING'],
-                    answers=answer_objects
+                    answers=answer_objects,
+                    source_url=url
                 )
                 question_answers.save()
-
-                url.url_last_scraped_at = get_now()
-                url.save()
             else:
                 logger.info("scrape_unscraped_urls_and_store_answers_task: "
                             "Url {} has none of the scrapable "

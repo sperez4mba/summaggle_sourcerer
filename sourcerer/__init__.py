@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import Flask
-from mongoengine import connect
 import logging
 from logging.handlers import RotatingFileHandler
 from datetime import timedelta
-
+from flask_mongoengine import MongoEngine
 from celery import Celery
 
 
@@ -18,9 +17,7 @@ else:
     app.config.from_pyfile(os.path.abspath('./config/config-local.py'))
 
 
-connect(
-    host=app.config['MONGODB_CONN_CHAIN']
-)
+db = MongoEngine(app)
 
 
 formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s %(pathname)s %(funcName)s %(message)s")

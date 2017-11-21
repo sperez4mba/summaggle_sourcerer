@@ -37,17 +37,17 @@ CSE_CONTEXT = env('CSE_CX', '123')
 
 LOG_FILE_SIZE = int(env('LOG_FILE_SIZE', '10'))
 
-#_MONGODB_AUTH_SOURCE = env('_MONGODB_AUTH_SOURCE', 'admin')
+
 MONGODB_HOST = env('MONGODB_HOST', '127.0.0.1')
-MONGODB_USER = env('MONGODB_USER', 'mongouser')
+MONGODB_USERNAME = env('MONGODB_USER', 'mongouser')
 MONGODB_PASSWORD = env('MONGODB_PASSWORD', 'password')
 MONGODB_NAME = env('MONGODB_NAME', 'mongodb')
-MONGODB_CONN_CHAIN = "mongodb://{}:{}@{}/{}".format(
-    MONGODB_USER,
-    MONGODB_PASSWORD,
-    MONGODB_HOST,
-    MONGODB_NAME
-)
+MONGODB_SETTINGS = {
+    'username': MONGODB_USER,
+    'password': MONGODB_PASSWORD,
+    'host': MONGODB_HOST,
+    'db': MONGODB_NAME
+}
 
 
 # REDIS

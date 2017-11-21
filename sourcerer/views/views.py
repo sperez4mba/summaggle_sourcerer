@@ -21,7 +21,6 @@ def search():
             search_task.apply_async((form.search.data, ))
             return redirect('/come_back')
         return render_template('search.html',
-                               title='Sign In',
                                form=form)
     except Exception as e:
         logger.exception('traceback')
