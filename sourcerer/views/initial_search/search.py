@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from flask import render_template, flash, redirect
+from flask import render_template, flash, redirect, jsonify
 
-from sourcerer import app
-from sourcerer.views.forms import SearchForm
-from sourcerer import logger
+from sourcerer import app, logger, db
+from .forms import SearchForm
 from sourcerer.tasks import search_task
 
 

@@ -61,4 +61,4 @@ celery_app.conf.CELERYBEAT_SCHEDULE = {
 
 
 from sourcerer.cli import *
-import sourcerer.views.views
+import sourcerer.views
