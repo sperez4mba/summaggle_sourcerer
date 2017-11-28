@@ -43,8 +43,3 @@ jobs:
            command: |
              . venv/bin/activate
              make test
-
-       - store_artifacts:
-           path: test-reports
-           destination: test-reports
-
